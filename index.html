@@ -22,7 +22,15 @@
   
   </h1>
     <div class="start_wrap">
-    <button onClick="startGame()">Start!</button>
+    <button class="start">Start!</button>
+    
+      <legend>playtime (sec)
+    <input class="time-input" type="text" value="10" onkeypress="validate(event)">
+    </legend>
+
+    <button class="sound"></button>
+
+    <button class="reset">reset record</button>
     </div>
 
   <div class="game">
@@ -51,6 +59,11 @@
   const scoreBoard = document.querySelector('.score');
   const recordScore = document.querySelector('.record_score');
   const moles = document.querySelectorAll('.mole');
+  const timeInput = document.querySelector('.time-input');
+  const start = document.querySelector('.start');
+  const reset = document.querySelector('button.reset');
+  const sound = document.querySelector('button.sound')
+
   let lasthole;
   let timeUp = false;
   let score = 0;
@@ -58,8 +71,20 @@
   
   recordScore.textContent = bestScore?bestScore:0;
 
+  
+function validate(evt) {
+  var theEvent = evt || window.event;
+  var key = theEvent.keyCode || theEvent.which;
+  key = String.fromCharCode( key );
+  var regex = /[0-9]|\./;
+  if( !regex.test(key) ) {
+    theEvent.returnValue = false;
+    if(theEvent.preventDefault) theEvent.preventDefault();
+  }
+}
 
-  function randomTime(min, max){
+ 
+function randomTime(min, max){
     return Math.round(Math.random()*(max - min) + min)
   }
 
@@ -84,21 +109,81 @@ function peep(){
   }, time)
 }
 
-function startGame(){
-  scoreBoard.textContent = 0;
-  timeUp = false;
-  score = 0;
-  recordScore.textContent = bestScore?bestScore:0;
-  peep();
-  setTimeout(() => timeUp = true, 10000)
+function setTime(){
+ return timeInput.value * 1000;
 }
 
+start.onclick = function startGame(){
+  score = 0;
+  scoreBoard.textContent = score;
+  timeUp = false;
+  recordScore.textContent = bestScore?bestScore:0;
+  peep();
+  buttonDisabled()
+  setTimeout(() => timeUp = true, setTime())
+}
+
+function deleteRecord(){
+  localStorage.clear()
+  recordScore.textContent = 0;
+  scoreBoard.textContent = 0;
+  bestScore = 0;
+  score = 0;
+}
+
+function buttonDisabled(){
+  reset.setAttribute('disabled', 'disabled');
+  start.setAttribute('disabled', 'disabled');
+  timeInput.setAttribute('disabled', 'disabled');
+  setTimeout(() => {
+    reset.removeAttribute('disabled', 'disabled');
+    start.removeAttribute('disabled', 'disabled');
+    timeInput.removeAttribute('disabled', 'disabled');
+  },setTime()+500);
+}
+
+reset.addEventListener('click', () => {
+    deleteRecord()
+  })
+ 
+
+  function soundStart(){
+  let audio = new Audio()
+  audio.src = 'pop.mp3';
+  audio.volume = 1;
+  audio.autoplay = true;
+  audio.play()
+  sound.classList.remove('off')  
+}
+
+function soundStop() {
+  let audio = new Audio()
+  audio.volume = 0;
+  audio.pause()
+  sound.classList.add('off')  
+}
+
+// function soundCheck(){
+//   sound.onclick = function(){
+
+//   if (sound.classList.contains('off')){
+//     return soundStop()
+//   } else {
+//     return soundStart();
+//   }
+//   }
+// }
 
 function bonk(e){
   if (!e.isTrusted) return;
   score++;
   this.parentNode.classList.remove('up')
   scoreBoard.textContent = score;
+
+  this.classList.add('anim');
+    setTimeout(() => {
+      this.classList.remove('anim');
+    }, 500)
 
   if (score>bestScore){
     bestScore = score
@@ -107,7 +192,19 @@ function bonk(e){
   recordScore.textContent = bestScore?bestScore:0;
 }
 
+sound.onclick = function(){
+  sound.classList.toggle('off');
+}
+
 moles.forEach(mole => mole.addEventListener('click', bonk))
+ 
+moles.forEach(mole => mole.addEventListener('click', () => {
+  if (sound.classList.contains('off')){
+  soundStop()
+} else {
+  soundStart()
+}
+}))
 
 </script>
 </body>

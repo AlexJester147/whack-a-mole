@@ -22,13 +22,30 @@ h1 {
   margin-top: 20px;
 }
 
-.score_wrap{
+.score_wrap, .time-input{
   background: rgba(255,255,255,0.2);
   display: inline-grid;
   vertical-align: text-bottom;
   padding: 0 3rem;
   line-height: 1;
   border-radius: 1rem;
+  outline: 0;
+}
+
+.time-input{
+  padding: 0 1rem;
+  font-size: 30px;
+  width: 80px;
+  display: flex;
+  text-align: center;
+  font-family: 'Amatic SC', cursive;
+  font-weight: bold;
+  height: -webkit-fill-available;
+}
+
+.input-wrap{
+  display: flex;
+  flex-direction: row;
 }
 
 .subs{
@@ -36,18 +53,28 @@ h1 {
   font-weight: normal;
 }
 
+legend{
+  height: 64px;
+  position: relative;
+  bottom: 23px;
+  font-size: 20px;
+  font-weight: bolder;
+}
+
 .start_wrap{
   display: flex;
-  margin-top: 20px;
+  margin: 20px auto 0 auto;
+  width: 800px;
+  justify-content: space-evenly;
 }
 
 button {
-  margin: auto;
   background: rgba(255,255,255,0.2);
   padding: 5px 20px;
   font-family: 'Amatic SC', cursive;
   font-size: 40px;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .game {
@@ -85,6 +112,59 @@ button {
   height: 100%;
   transition:all 0.4s;
 }
+
+.mole.anim{
+  animation:rot 0.5s ease-in-out infinite;
+}
+
+.sound{
+  width: 64px;
+  height: 64px;
+  background-image:url(sound.png) ;
+  background-size: 40px, 40px, contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.sound.off{
+  background-image:url(sound_no.png) ;
+}
+
+@keyframes rot{
+  0%{
+    transform: rotate(0deg);
+  }
+  10%{
+    transform: rotate(-45deg);
+  }
+  20%{
+    transform: rotate(45deg);
+  }
+  30%{
+    transform: rotate(-30deg);
+  }
+  40%{
+    transform: rotate(30deg);
+  }
+  50%{
+    transform: rotate(-15deg);
+  }
+  60%{
+    transform: rotate(15deg);
+  }
+  70%{
+    transform: rotate(-5deg);
+  }
+  80%{
+    transform: rotate(5deg);
+  }
+  100%{
+    transform: rotate(0deg);
+  }
+
+  }
+
+
 
 .hole.up .mole {
   top: 0;
